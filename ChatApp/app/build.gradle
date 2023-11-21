@@ -5,11 +5,11 @@ plugins {
 
 android {
     namespace 'edu.skku.cs.chatapp'
-    compileSdk 33
+    compileSdk 34
 
     defaultConfig {
         applicationId "edu.skku.cs.chatapp"
-        minSdk 29
+        minSdk 28
         targetSdk 33
         versionCode 1
         versionName "1.0"

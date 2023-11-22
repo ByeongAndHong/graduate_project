@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/navigation_friendlist">
+
+    <fragment
+        android:id="@+id/navigation_friendlist"
+        android:name="edu.skku.cs.chatapp.ui.friendlist.FriendListFragment"
+        android:label="@string/title_friendlist"
+        tools:layout="@layout/fragment_friendlist" />
+
+    <fragment
+        android:id="@+id/navigation_chatlist"
+        android:name="edu.skku.cs.chatapp.ui.chatlist.ChatListFragment"
+        android:label="@string/title_chatlist"
+        tools:layout="@layout/fragment_chatlist" />
+
+    <fragment
+        android:id="@+id/navigation_setting"
+        android:name="edu.skku.cs.chatapp.ui.setting.SettingFragment"
+        android:label="@string/title_setting"
+        tools:layout="@layout/fragment_setting" />
+</navigation>

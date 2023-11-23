@@ -33,6 +33,7 @@ class MainActivity : AppCompatActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
 
+        //프로젝트 처음 만들 면 생성되어 있는 액션 바 제거
         val actionBar: ActionBar? = supportActionBar
         if (actionBar != null) {
             actionBar.hide()

@@ -10,14 +10,14 @@
         android:id="@+id/logoImageView"
         android:layout_width="162dp"
         android:layout_height="154dp"
-        app:layout_constraintBottom_toTopOf="@+id/guideline"
+        app:layout_constraintBottom_toTopOf="@+id/guideline_65"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/logo" />
 
     <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline"
+        android:id="@+id/guideline_65"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -31,7 +31,7 @@
         android:textAlignment="center"
         android:textColor="#000000"
         android:textSize="34sp"
-        app:layout_constraintBottom_toTopOf="@+id/guideline"
+        app:layout_constraintBottom_toTopOf="@+id/guideline_65"
         app:layout_constraintEnd_toEndOf="@+id/logoImageView"
         app:layout_constraintStart_toStartOf="@+id/logoImageView"
         app:layout_constraintTop_toBottomOf="@+id/logoImageView" />
@@ -54,5 +54,5 @@
         android:text="로그인"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/guideline" />
+        app:layout_constraintTop_toTopOf="@+id/guideline_65" />
 </androidx.constraintlayout.widget.ConstraintLayout>

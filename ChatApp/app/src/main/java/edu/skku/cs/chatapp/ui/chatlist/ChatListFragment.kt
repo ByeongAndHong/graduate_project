@@ -16,6 +16,7 @@ class ChatListFragment : Fragment() {
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
+    private var searchClicked = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -32,6 +33,22 @@ class ChatListFragment : Fragment() {
         chatListViewModel.text.observe(viewLifecycleOwner) {
             textView.text = it
         }
+
+        //돋보기 버튼 클릭 시 검색 바 뜨도록 하고, 다시 누르면 사라지게 설정
+        val chatListSearchImageView = binding.chatListSearchImageView
+        val chatListSearchFrameLayout = binding.chatListSearchFrameLayout
+        chatListSearchFrameLayout.visibility = View.GONE
+
+        chatListSearchImageView.setOnClickListener {
+            searchClicked = !searchClicked
+            if(searchClicked){
+                chatListSearchFrameLayout.visibility = View.VISIBLE
+            }
+            else{
+                chatListSearchFrameLayout.visibility = View.GONE
+            }
+        }
+
         return root
     }
 

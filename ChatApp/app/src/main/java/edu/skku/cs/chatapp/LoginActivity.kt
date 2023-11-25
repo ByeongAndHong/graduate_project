@@ -7,8 +7,8 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import com.google.gson.Gson
-import edu.skku.cs.chatapp.dto.RegisterUser
-import edu.skku.cs.chatapp.dto.RegisterUserResponse
+import edu.skku.cs.chatapp.dto.LoginUser
+import edu.skku.cs.chatapp.dto.LoginUserResponse
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -17,35 +17,36 @@ import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.IOException
 
-class RegisterActivity : AppCompatActivity() {
+class LoginActivity : AppCompatActivity() {
+    companion object{
+        const val EXT_ID = "id"
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_register)
+        setContentView(R.layout.activity_login)
 
-        val registerButton = findViewById<Button>(R.id.registerButton)
-        registerButton.setOnClickListener {
-            val editTextPersonName = findViewById<EditText>(R.id.editTextPersonName)
+        val loginButton = findViewById<Button>(R.id.loginButton)
+        loginButton.setOnClickListener {
             val editTextEmailAddress = findViewById<EditText>(R.id.editTextEmailAddress)
             val editTextPassword = findViewById<EditText>(R.id.editTextPassword)
 
-            val name = editTextPersonName.text.toString()
             val email = editTextEmailAddress.text.toString()
             val password = editTextPassword.text.toString()
 
-            sendRegisterRequest(name, email, password)
+            sendLoginRequest(email, password)
         }
     }
 
-    private fun sendRegisterRequest(name: String, email: String, password: String) {
-        val json = Gson().toJson(RegisterUser(name, email, password))
+    private fun sendLoginRequest(email: String, password: String) {
+        val json = Gson().toJson(LoginUser(email, password))
         val mediaType = "application/json; charset=utf-8".toMediaType()
         val client = OkHttpClient()
         val host = "http://192.168.1.101:5000"
 
-        val path = "/register"
+        val path = "/login"
         val req = Request.Builder().url(host+path).post(json.toString().toRequestBody(mediaType)).build()
 
-        client.newCall(req).enqueue(object : Callback{
+        client.newCall(req).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
                 e.printStackTrace()
             }
@@ -54,15 +55,20 @@ class RegisterActivity : AppCompatActivity() {
                 response.use {
                     if(!response.isSuccessful)throw IOException("Unexpected code $response")
                     val str = response.body!!.string()
-                    val data = Gson().fromJson(str, RegisterUserResponse::class.java)
+                    val data = Gson().fromJson(str, LoginUserResponse::class.java)
                     CoroutineScope(Dispatchers.Main).launch {
                         if(data.Status == "success"){
-                            val intent = Intent(applicationContext, StartActivity::class.java)
+                            val intent = Intent(applicationContext, MainActivity::class.java).apply{
+                                putExtra(EXT_ID, data.Id)
+                            }
                             startActivity(intent)
                             finish()
                         }
+                        else if(data.Status == "wrong id"){
+                            Toast.makeText(this@LoginActivity, "아이디를 확인해 주세요", Toast.LENGTH_SHORT).show()
+                        }
                         else{
-                            Toast.makeText(this@RegisterActivity, "Wrong User Name", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(this@LoginActivity, "비밀번호를 확인해 주세요", Toast.LENGTH_SHORT).show()
                         }
                     }
                 }

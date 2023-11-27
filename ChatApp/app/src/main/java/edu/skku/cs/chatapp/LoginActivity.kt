@@ -3,9 +3,11 @@ package edu.skku.cs.chatapp
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
+import androidx.appcompat.app.ActionBar
 import com.google.gson.Gson
 import edu.skku.cs.chatapp.dto.LoginUser
 import edu.skku.cs.chatapp.dto.LoginUserResponse
@@ -35,6 +37,12 @@ class LoginActivity : AppCompatActivity() {
 
             sendLoginRequest(email, password)
         }
+
+        //프로젝트 처음 만들 면 생성되어 있는 액션 바 제거
+        val actionBar: ActionBar? = supportActionBar
+        if (actionBar != null) {
+            actionBar.hide()
+        }
     }
 
     private fun sendLoginRequest(email: String, password: String) {
@@ -59,7 +67,7 @@ class LoginActivity : AppCompatActivity() {
                     CoroutineScope(Dispatchers.Main).launch {
                         if(data.Status == "success"){
                             val intent = Intent(applicationContext, MainActivity::class.java).apply{
-                                putExtra(EXT_ID, data.Id)
+                                putExtra(EXT_ID, data.Id.toString())
                             }
                             startActivity(intent)
                             finish()

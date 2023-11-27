@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
+import androidx.appcompat.app.ActionBar
 import com.google.gson.Gson
 import edu.skku.cs.chatapp.dto.RegisterUser
 import edu.skku.cs.chatapp.dto.RegisterUserResponse
@@ -33,6 +34,12 @@ class RegisterActivity : AppCompatActivity() {
             val password = editTextPassword.text.toString()
 
             sendRegisterRequest(name, email, password)
+        }
+
+        //프로젝트 처음 만들 면 생성되어 있는 액션 바 제거
+        val actionBar: ActionBar? = supportActionBar
+        if (actionBar != null) {
+            actionBar.hide()
         }
     }
 

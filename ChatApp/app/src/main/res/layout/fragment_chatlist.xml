@@ -121,8 +121,8 @@
                 android:layout_width="298dp"
                 android:layout_height="57dp"
                 android:layout_marginStart="20dp"
+                android:hint="이름"
                 android:inputType="textPersonName"
-                android:text="Name"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />

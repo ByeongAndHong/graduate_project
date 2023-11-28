@@ -12,6 +12,10 @@ class User(db.Model):
     Email = db.Column(db.String(255), unique=True, nullable=False)
     Image = db.Column(db.LargeBinary)
 
+class Friend(db.Model):
+    UserId = db.Column(db.Integer, primary_key=True)
+    FriendId = db.Column(db.Integer, db.ForeignKey('user.Id'), nullable=False)
+
 @app.route('/login', methods=['POST'])
 def login():
     data = request.get_json()
@@ -48,6 +52,20 @@ def register():
         return jsonify({'Status': 'success'})
     except Exception as e:
         return jsonify({'Status': 'error'})
+
+
+@app.route('/friends/<int:user_id>', methods=['GET'])
+def get_friends(user_id):
+    user = User.query.get(user_id)
+    if not user:
+        return jsonify({'Status': 'error', 'Message': 'User not found'})
+
+    friend_ids = [friend.FriendId for friend in Friend.query.filter_by(UserId=user.Id).all()]
+    friends = User.query.filter(User.Id.in_(friend_ids)).all()
+
+    friends_list = [{'UserName': friend.UserName, 'Email': friend.Email, 'Image': friend.Image} for friend in friends]
+    print(friends_list)
+    return jsonify({'Status': 'success', 'Friends': friends_list})
 
 with app.app_context():
     db.create_all()

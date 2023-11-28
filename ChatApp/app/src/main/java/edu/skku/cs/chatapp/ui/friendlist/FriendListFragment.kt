@@ -38,7 +38,7 @@ class FriendListFragment : Fragment() {
         }
         sharedViewModel.getFriendList().observe(viewLifecycleOwner) { list ->
             CoroutineScope(Dispatchers.Main).launch {
-                val listAdapter = FriendListAdapter(inflater, list)
+                val listAdapter = FriendListAdapter(requireContext(), savedInstanceState, list)
                 val listView = binding.friendListItemView
                 listView.adapter = listAdapter
             }

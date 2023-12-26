@@ -18,11 +18,9 @@ import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.IOException
+import  edu.skku.cs.chatapp.Utils
 
 class LoginActivity : AppCompatActivity() {
-    companion object{
-        const val EXT_ID = "id"
-    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
@@ -49,7 +47,7 @@ class LoginActivity : AppCompatActivity() {
         val json = Gson().toJson(LoginUser(email, password))
         val mediaType = "application/json; charset=utf-8".toMediaType()
         val client = OkHttpClient()
-        val host = "http://192.168.1.101:5000"
+        val host = Utils.SERVER_URL
 
         val path = "/login"
         val req = Request.Builder().url(host+path).post(json.toString().toRequestBody(mediaType)).build()
@@ -67,7 +65,7 @@ class LoginActivity : AppCompatActivity() {
                     CoroutineScope(Dispatchers.Main).launch {
                         if(data.Status == "success"){
                             val intent = Intent(applicationContext, MainActivity::class.java).apply{
-                                putExtra(EXT_ID, data.Id.toString())
+                                putExtra(Utils.EXT_ID, data.Id.toString())
                             }
                             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                             startActivity(intent)

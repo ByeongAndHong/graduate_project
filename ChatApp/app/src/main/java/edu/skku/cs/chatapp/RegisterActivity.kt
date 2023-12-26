@@ -47,7 +47,7 @@ class RegisterActivity : AppCompatActivity() {
         val json = Gson().toJson(RegisterUser(name, email, password))
         val mediaType = "application/json; charset=utf-8".toMediaType()
         val client = OkHttpClient()
-        val host = "http://192.168.1.101:5000"
+        val host = Utils.SERVER_URL
 
         val path = "/register"
         val req = Request.Builder().url(host+path).post(json.toString().toRequestBody(mediaType)).build()

@@ -15,15 +15,13 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.gson.Gson
-import edu.skku.cs.chatapp.LoginActivity.Companion.EXT_ID
 import edu.skku.cs.chatapp.databinding.ActivityMainBinding
 import edu.skku.cs.chatapp.Utils
-import edu.skku.cs.chatapp.dto.Friend
-import edu.skku.cs.chatapp.dto.FriendListResponse
-import edu.skku.cs.chatapp.dto.LoginUserResponse
+import edu.skku.cs.chatapp.dto.*
 import edu.skku.cs.chatapp.ui.SharedViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import okhttp3.*
 import java.io.IOException
@@ -35,10 +33,21 @@ class MainActivity : AppCompatActivity() {
     private lateinit var sharedViewModel: SharedViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        id = intent.getStringExtra(EXT_ID)
+        id = intent.getStringExtra(Utils.EXT_ID)
         sharedViewModel = ViewModelProvider(this).get(SharedViewModel::class.java)
         sharedViewModel.setUserId(id+"")
         sendFriendGetRequest()
+        // 코루틴을 사용하여 메시지 전송 시작
+        CoroutineScope(Dispatchers.IO).launch {
+            while (true) {
+                // 메시지 전송 로직
+                sendChatlistGetRequest()
+
+                // 일정 시간 대기 후 다음 전송 시도
+                delay(5000) // 예시: 5초마다 전송
+            }
+        }
+        sendChatlistGetRequest()
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -65,7 +74,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun sendFriendGetRequest(){
         val client = OkHttpClient()
-        val host = "http://192.168.1.101:5000"
+        val host = Utils.SERVER_URL
 
         val path = "/friends/" + id
         val req = Request.Builder().url(host+path).get().build()
@@ -88,11 +97,49 @@ class MainActivity : AppCompatActivity() {
                             for (friendData in friendsArray) {
                                 // Assuming 'image' is a byte array
                                 //val bitmap = BitmapFactory.decodeByteArray(friendData.image, 0, friendData.image.size)
-                                val friend = Friend(friendData.UserName, friendData.Email, friendData.Image)
+                                val friend = Friend(friendData.Id, friendData.UserName, friendData.Email, friendData.Image)
                                 friendList.add(friend)
                             }
 
                             sharedViewModel.setFriendList(friendList)
+                        }
+                        else{
+                            Toast.makeText(this@MainActivity, "정보 로딩 실패", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                }
+            }
+        })
+    }
+
+    private fun sendChatlistGetRequest(){
+        val client = OkHttpClient()
+        val host = Utils.SERVER_URL
+
+        val path = "/chatlist/" + id
+        val req = Request.Builder().url(host+path).get().build()
+
+        client.newCall(req).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                e.printStackTrace()
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+                response.use {
+                    if(!response.isSuccessful)throw IOException("Unexpected code $response")
+                    val str = response.body!!.string()
+                    Log.d("response", str)
+                    val data = Gson().fromJson(str, ChatListItemResponse::class.java)
+                    CoroutineScope(Dispatchers.Main).launch {
+                        if(data.Status == "success"){
+                            val chatList = mutableListOf<ChatListItem>()
+                            val chatArray = data.Chats
+                            for (chatData in chatArray) {
+                                val chat = ChatListItem(chatData.ChatId, chatData.UserId, chatData.UserName, chatData.Message)
+                                chatList.add(chat)
+                            }
+
+                            sharedViewModel.setChatList(chatList)
                         }
                         else{
                             Toast.makeText(this@MainActivity, "정보 로딩 실패", Toast.LENGTH_SHORT).show()

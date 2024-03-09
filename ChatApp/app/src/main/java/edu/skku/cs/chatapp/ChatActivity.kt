@@ -31,7 +31,9 @@ class ChatActivity : AppCompatActivity() {
         val id = intent.getStringExtra(Utils.EXT_ID)?.toInt()
         val friendName = intent.getStringExtra(Utils.EXT_FRIEND_NAME)
         val friendId = intent.getStringExtra(Utils.EXT_FRIEND_ID)?.toInt()
-        val chatId = intent.getStringExtra(Utils.EXT_CHAT_ID)
+        var chatId = intent.getStringExtra(Utils.EXT_CHAT_ID)
+
+        Log.d("debug", chatId.toString())
 
         //프로젝트 처음 만들 면 생성되어 있는 액션 바 제거
         val actionBar: ActionBar? = supportActionBar
@@ -80,6 +82,10 @@ class ChatActivity : AppCompatActivity() {
                                 }
                                 else{
                                     Toast.makeText(this@ChatActivity, "메시지 전송 실패", Toast.LENGTH_SHORT).show()
+                                }
+
+                                if(chatId == "-1"){
+                                    chatId = data.ChatId.toString()
                                 }
                             }
                         }

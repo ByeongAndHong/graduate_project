@@ -97,7 +97,7 @@ class MainActivity : AppCompatActivity() {
                             for (friendData in friendsArray) {
                                 // Assuming 'image' is a byte array
                                 //val bitmap = BitmapFactory.decodeByteArray(friendData.image, 0, friendData.image.size)
-                                val friend = Friend(friendData.Id, friendData.UserName, friendData.Email, friendData.Image)
+                                val friend = Friend(friendData.ChatId, friendData.Id, friendData.UserName, friendData.Email, friendData.Image)
                                 friendList.add(friend)
                             }
 

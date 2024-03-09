@@ -10,7 +10,7 @@ import edu.skku.cs.chatapp.R
 
 data class SendMessage(var UserId: Int?, var TargetId: Int?, var Message: String)
 
-data class SendMessageResponse(var Status:String)
+data class SendMessageResponse(var Status:String, var ChatId: Int)
 
 data class Message(var UserId: Int, var Message: String)
 

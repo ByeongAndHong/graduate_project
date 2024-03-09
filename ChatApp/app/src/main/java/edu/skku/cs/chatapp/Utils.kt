@@ -8,7 +8,7 @@ class Utils {
         const val EXT_FRIEND_NAME = "friendName"
         const val EXT_FRIEND_ID = "friendId"
         const val EXT_CHAT_ID = "chatId"
-        const val SERVER_URL = "http://192.168.1.101:5000"
+        const val SERVER_URL = "http://172.20.10.2:5000"
     }
     fun dpToPx(context: Context, dp: Float): Int {
         val scale = context.resources.displayMetrics.density

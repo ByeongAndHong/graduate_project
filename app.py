@@ -108,6 +108,8 @@ def send():
 
                 db.session.add(new_message)
                 db.session.commit()
+
+                return jsonify({'Status': 'success', 'ChatId': ChatId})
             else:
                 # ChatList 레코드가 이미 존재하면 해당 레코드의 ID를 가져옴
                 Time = datetime.utcnow()
@@ -125,7 +127,8 @@ def send():
                 chat_list_record.Time = Time
                 db.session.commit()
 
-        return jsonify({'Status': 'success'})
+                return jsonify({'Status': 'success', 'ChatId': ChatId})
+
     except Exception as e:
         return jsonify({'Status': 'error'})
 
@@ -138,8 +141,15 @@ def get_friends(user_id):
 
     friend_ids = [friend.FriendId for friend in Friend.query.filter_by(UserId=user.Id).all()]
     friends = User.query.filter(User.Id.in_(friend_ids)).all()
+    friends_list = []
+    for friend in friends:
+        small_id = min(user_id, friend.Id)
+        big_id = max(user_id, friend.Id)
+        chat_list_record = Chatlist.query.filter_by(SmallId=small_id, BigId=big_id).first()
+        chat_id = chat_list_record.Id if chat_list_record else -1
 
-    friends_list = [{'Id': friend.Id, 'UserName': friend.UserName, 'Email': friend.Email, 'Image': friend.Image} for friend in friends]
+        friends_list.append({'ChatId': chat_id, 'Id': friend.Id, 'UserName': friend.UserName, 'Email': friend.Email, 'Image': friend.Image})
+
     return jsonify({'Status': 'success', 'Friends': friends_list})
 
 @app.route('/chatlist/<int:user_id>', methods=['GET'])

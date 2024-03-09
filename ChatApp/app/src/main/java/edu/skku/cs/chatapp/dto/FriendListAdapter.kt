@@ -20,7 +20,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.security.AccessController.getContext
 
-data class Friend(var Id: Int, var UserName: String, var Email: String, var Image: ByteArray?)
+data class Friend(var ChatId: Int, var Id: Int, var UserName: String, var Email: String, var Image: ByteArray?)
 data class FriendListResponse(var Status: String, var Friends: List<Friend>)
 
 class FriendListAdapter(val context:Context, val bundle: Bundle?, val items: List<Friend>, val id: String): BaseAdapter() {
@@ -53,6 +53,7 @@ class FriendListAdapter(val context:Context, val bundle: Bundle?, val items: Lis
                     putExtra(Utils.EXT_ID, id)
                     putExtra(Utils.EXT_FRIEND_NAME, items.get(p0).UserName)
                     putExtra(Utils.EXT_FRIEND_ID, items.get(p0).Id.toString())
+                    putExtra(Utils.EXT_CHAT_ID, items.get(p0).ChatId.toString())
                 }
                 startActivity(context, intent, bundle)
             }

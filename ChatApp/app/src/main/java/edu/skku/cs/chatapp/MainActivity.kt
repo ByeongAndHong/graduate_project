@@ -1,9 +1,9 @@
 package edu.skku.cs.chatapp
 
-import android.graphics.BitmapFactory
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
-import android.widget.FrameLayout
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
@@ -19,38 +19,40 @@ import edu.skku.cs.chatapp.databinding.ActivityMainBinding
 import edu.skku.cs.chatapp.Utils
 import edu.skku.cs.chatapp.dto.*
 import edu.skku.cs.chatapp.ui.SharedViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import okhttp3.*
 import java.io.IOException
 
 class MainActivity : AppCompatActivity() {
-    private var utils = Utils()
-    private var id:String? = "-1"
+    private var id:String? = "0"
     private lateinit var binding: ActivityMainBinding
     private lateinit var sharedViewModel: SharedViewModel
+    private var sendGetRequestScope = CoroutineScope(Dispatchers.IO)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         id = intent.getStringExtra(Utils.EXT_ID)
+
         sharedViewModel = ViewModelProvider(this).get(SharedViewModel::class.java)
         sharedViewModel.setUserId(id+"")
-        sendFriendGetRequest()
+
         // 코루틴을 사용하여 메시지 전송 시작
-        CoroutineScope(Dispatchers.IO).launch {
+        sendGetRequestScope.launch {
             while (true) {
                 // 메시지 전송 로직
                 sendChatlistGetRequest()
-
+                sendFriendGetRequest()
                 // 일정 시간 대기 후 다음 전송 시도
-                delay(5000) // 예시: 5초마다 전송
+                delay(3000) // 예시: 5초마다 전송
             }
         }
+        sendFriendGetRequest()
         sendChatlistGetRequest()
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        val nameTextView = binding.nameTextView
+        nameTextView.text = Utils.APP_NAME
 
         val navView: BottomNavigationView = binding.navView
 
@@ -148,5 +150,11 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         })
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.d("destroy", "Destroy")
+        sendGetRequestScope.cancel()
     }
 }

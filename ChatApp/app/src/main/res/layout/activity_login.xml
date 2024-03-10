@@ -6,6 +6,49 @@
     android:layout_height="match_parent"
     tools:context=".LoginActivity">
 
+    <FrameLayout
+        android:id="@+id/titleFrameLayout"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="#000000"
+        app:layout_constraintBottom_toTopOf="@+id/guideline_10_login"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/titleConstraintLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="1dp"
+            android:layout_marginTop="1dp"
+            android:layout_marginRight="1dp"
+            android:layout_marginBottom="1dp"
+            android:background="#FFFFFF">
+
+            <ImageView
+                android:id="@+id/logoImageView"
+                android:layout_width="138dp"
+                android:layout_height="65dp"
+                android:layout_marginStart="50dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/logo" />
+
+            <TextView
+                android:id="@+id/nameTextView"
+                android:layout_width="114dp"
+                android:layout_height="38dp"
+                android:text="어플 이름"
+                android:textAlignment="center"
+                android:textSize="28sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/logoImageView"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </FrameLayout>
+
     <EditText
         android:id="@+id/editTextPassword"
         android:layout_width="226dp"
@@ -30,10 +73,18 @@
         android:id="@+id/editTextEmailAddress"
         android:layout_width="230dp"
         android:layout_height="68dp"
+        android:layout_marginTop="100dp"
         android:ems="10"
         android:hint="이메일"
         android:inputType="textEmailAddress"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@+id/guideline_10_login" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_10_login"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.1" />
 </androidx.constraintlayout.widget.ConstraintLayout>

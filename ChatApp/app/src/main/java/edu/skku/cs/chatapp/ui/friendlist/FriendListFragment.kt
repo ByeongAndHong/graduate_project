@@ -10,9 +10,7 @@ import androidx.lifecycle.ViewModelProvider
 import edu.skku.cs.chatapp.databinding.FragmentFriendlistBinding
 import edu.skku.cs.chatapp.dto.FriendListAdapter
 import edu.skku.cs.chatapp.ui.SharedViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 
 class FriendListFragment : Fragment() {
     private lateinit var sharedViewModel: SharedViewModel
@@ -21,6 +19,7 @@ class FriendListFragment : Fragment() {
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
+    private val getFriendListScope = CoroutineScope(Dispatchers.Main)
     private var searchClicked = false
     private var id: String = ""
 
@@ -37,7 +36,7 @@ class FriendListFragment : Fragment() {
             id = userId
         }
         sharedViewModel.getFriendList().observe(viewLifecycleOwner) { list ->
-            CoroutineScope(Dispatchers.Main).launch {
+            getFriendListScope.launch {
                 val listAdapter = FriendListAdapter(requireContext(), savedInstanceState, list, id)
                 val listView = binding.friendListItemView
                 listView.adapter = listAdapter

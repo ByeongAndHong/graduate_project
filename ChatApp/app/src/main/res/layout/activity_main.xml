@@ -58,7 +58,7 @@
             android:background="#FFFFFF">
 
             <ImageView
-                android:id="@+id/mainLogoImageView"
+                android:id="@+id/logoImageView"
                 android:layout_width="138dp"
                 android:layout_height="65dp"
                 android:layout_marginStart="50dp"
@@ -68,14 +68,14 @@
                 app:srcCompat="@drawable/logo" />
 
             <TextView
-                android:id="@+id/mainNameTextView"
+                android:id="@+id/nameTextView"
                 android:layout_width="114dp"
                 android:layout_height="38dp"
                 android:text="어플 이름"
                 android:textAlignment="center"
                 android:textSize="28sp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/mainLogoImageView"
+                app:layout_constraintStart_toEndOf="@+id/logoImageView"
                 app:layout_constraintTop_toTopOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </FrameLayout>

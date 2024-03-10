@@ -12,14 +12,12 @@ import edu.skku.cs.chatapp.databinding.FragmentChatlistBinding
 import edu.skku.cs.chatapp.dto.ChatListAdapter
 import edu.skku.cs.chatapp.dto.FriendListAdapter
 import edu.skku.cs.chatapp.ui.SharedViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 
 class ChatListFragment : Fragment() {
     private lateinit var sharedViewModel: SharedViewModel
     private var _binding: FragmentChatlistBinding? = null
-
+    private val updateChatListScope = CoroutineScope(Dispatchers.Main)
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
@@ -39,10 +37,14 @@ class ChatListFragment : Fragment() {
             id = userId
         }
         sharedViewModel.getChatList().observe(viewLifecycleOwner) { list ->
-            CoroutineScope(Dispatchers.Main).launch {
-                val listAdapter = ChatListAdapter(requireContext(), savedInstanceState, list, id)
-                val listView = binding.chatListItemView
-                listView.adapter = listAdapter
+            updateChatListScope.launch {
+                while(true) {
+                    val listAdapter = ChatListAdapter(requireContext(), savedInstanceState, list, id)
+                    val listView = binding.chatListItemView
+                    listView.adapter = listAdapter
+
+                    delay(500)
+                }
             }
         }
 
@@ -85,6 +87,7 @@ class ChatListFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        updateChatListScope.cancel()
         _binding = null
     }
 }

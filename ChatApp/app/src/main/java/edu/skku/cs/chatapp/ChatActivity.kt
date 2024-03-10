@@ -1,16 +1,21 @@
 package edu.skku.cs.chatapp
 
 import android.content.Intent
+import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.EditText
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.ListView
 import android.widget.ScrollView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.ActionBar
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
 import com.google.gson.Gson
 import edu.skku.cs.chatapp.dto.*
 import kotlinx.coroutines.CoroutineScope
@@ -23,8 +28,12 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.IOException
 
 class ChatActivity : AppCompatActivity() {
+    private lateinit var sharedPreferences: SharedPreferences
     var messageList = mutableListOf<Message>()
-    var updateFlag = true;
+    var graph = false
+    var analysis = false
+    var updateFlag = true
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_chat)
@@ -33,7 +42,9 @@ class ChatActivity : AppCompatActivity() {
         val friendId = intent.getStringExtra(Utils.EXT_FRIEND_ID)?.toInt()
         var chatId = intent.getStringExtra(Utils.EXT_CHAT_ID)
 
-        Log.d("debug", chatId.toString())
+        sharedPreferences = getSharedPreferences("chat_settings", MODE_PRIVATE)
+        graph = sharedPreferences.getBoolean("graph_switch_state", false)
+        analysis = sharedPreferences.getBoolean("analysis_switch_state", false)
 
         //프로젝트 처음 만들 면 생성되어 있는 액션 바 제거
         val actionBar: ActionBar? = supportActionBar
@@ -45,6 +56,28 @@ class ChatActivity : AppCompatActivity() {
         val xButton = findViewById<ImageView>(R.id.xImageView)
         val messageText = findViewById<EditText>(R.id.messageText)
         val sendImageView = findViewById<ImageView>(R.id.sendImageView)
+        val emotionFrameLayout = findViewById<FrameLayout>(R.id.emotionFrameLayout)
+        val messageListView = findViewById<ListView>(R.id.messageListView)
+
+        if(!graph && !analysis){
+            // emotionFrameLayout를 숨김
+            emotionFrameLayout.visibility = View.GONE
+
+            // messageListView의 제약 조건을 설정하여 emotionFrameLayout의 자리를 차지하도록 함
+            val constraintLayout = findViewById<ConstraintLayout>(R.id.constraintLayout)
+            val constraintSet = ConstraintSet()
+            constraintSet.clone(constraintLayout)
+
+            constraintSet.connect(
+                messageListView.id,
+                ConstraintSet.TOP,
+                R.id.guideline_10_chat,
+                ConstraintSet.TOP
+            )
+
+            // constraintSet을 적용하여 레이아웃 업데이트
+            constraintSet.applyTo(constraintLayout)
+        }
 
         friendNameTextView.text = friendName
         xButton.setOnClickListener {
@@ -84,8 +117,9 @@ class ChatActivity : AppCompatActivity() {
                                     Toast.makeText(this@ChatActivity, "메시지 전송 실패", Toast.LENGTH_SHORT).show()
                                 }
 
-                                if(chatId == "-1"){
+                                if(chatId == "0"){
                                     chatId = data.ChatId.toString()
+                                    Log.d("chatId", " "+chatId)
                                 }
                             }
                         }

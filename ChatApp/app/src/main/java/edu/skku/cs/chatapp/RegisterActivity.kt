@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.ActionBar
 import com.google.gson.Gson
@@ -22,6 +23,9 @@ class RegisterActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register)
+
+        val mainNameTextView = findViewById<TextView>(R.id.nameTextView)
+        mainNameTextView.text = Utils.APP_NAME
 
         val registerButton = findViewById<Button>(R.id.registerButton)
         registerButton.setOnClickListener {

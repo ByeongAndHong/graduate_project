@@ -3,9 +3,9 @@ package edu.skku.cs.chatapp
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.widget.Button
 import android.widget.EditText
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.ActionBar
 import com.google.gson.Gson
@@ -18,12 +18,14 @@ import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.IOException
-import  edu.skku.cs.chatapp.Utils
 
 class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
+
+        val mainNameTextView = findViewById<TextView>(R.id.nameTextView)
+        mainNameTextView.text = Utils.APP_NAME
 
         val loginButton = findViewById<Button>(R.id.loginButton)
         loginButton.setOnClickListener {

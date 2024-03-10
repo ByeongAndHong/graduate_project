@@ -33,7 +33,7 @@ class SettingFragment : Fragment() {
         val logoutButton = binding.logoutButton
         profileButton.setOnClickListener {
             val intent = Intent(requireContext(), ProfileSetActivity::class.java)
-            startActivity(intent)
+            startActivity(intent, savedInstanceState)
         }
 
         chatButton.setOnClickListener {
@@ -42,10 +42,10 @@ class SettingFragment : Fragment() {
         }
 
         logoutButton.setOnClickListener {
+            requireActivity().finish()
             val intent = Intent(requireContext(), StartActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             startActivity(intent)
-            requireActivity().finish()
         }
 
         return root

@@ -146,7 +146,7 @@ def get_friends(user_id):
         small_id = min(user_id, friend.Id)
         big_id = max(user_id, friend.Id)
         chat_list_record = Chatlist.query.filter_by(SmallId=small_id, BigId=big_id).first()
-        chat_id = chat_list_record.Id if chat_list_record else -1
+        chat_id = chat_list_record.Id if chat_list_record else 0
 
         friends_list.append({'ChatId': chat_id, 'Id': friend.Id, 'UserName': friend.UserName, 'Email': friend.Email, 'Image': friend.Image})
 
@@ -175,6 +175,10 @@ def get_chats(user_id):
 
 @app.route('/message/<int:chat_id>', methods=['GET'])
 def get_messages(chat_id):
+    if chat_id == 0:
+        messages = []
+        return jsonify({'Status': 'success', 'Messages': messages})
+
     messages = Chat.query.filter_by(ChatId=chat_id).all()
 
     # 각 레코드의 BigId를 사용하여 User 테이블에서 UserName 가져와서 추가

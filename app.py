@@ -1,10 +1,14 @@
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
+from model import EmotionClassifier
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:1234@localhost:3306/chatapp'
 db = SQLAlchemy(app)
+
+model_path = 'your_path'
+ec = EmotionClassifier(model_path)
 
 class User(db.Model):
     Id = db.Column(db.Integer, primary_key=True)

@@ -57,11 +57,13 @@ class ChatActivity : AppCompatActivity() {
         val messageText = findViewById<EditText>(R.id.messageText)
         val sendImageView = findViewById<ImageView>(R.id.sendImageView)
         val emotionFrameLayout = findViewById<FrameLayout>(R.id.emotionFrameLayout)
+        val analysisFrameLayout = findViewById<FrameLayout>(R.id.analysisFrameLayout)
         val messageListView = findViewById<ListView>(R.id.messageListView)
 
         if(!graph && !analysis){
             // emotionFrameLayout를 숨김
             emotionFrameLayout.visibility = View.GONE
+            analysisFrameLayout.visibility = View.GONE
 
             // messageListView의 제약 조건을 설정하여 emotionFrameLayout의 자리를 차지하도록 함
             val constraintLayout = findViewById<ConstraintLayout>(R.id.constraintLayout)
@@ -76,6 +78,58 @@ class ChatActivity : AppCompatActivity() {
             )
 
             // constraintSet을 적용하여 레이아웃 업데이트
+            constraintSet.applyTo(constraintLayout)
+        }
+        else if(graph && !analysis){
+            analysisFrameLayout.visibility = View.GONE
+
+            // messageListView의 제약 조건을 설정하여 emotionFrameLayout의 자리를 차지하도록 함
+            val constraintLayout = findViewById<ConstraintLayout>(R.id.constraintLayout)
+            val constraintSet = ConstraintSet()
+            constraintSet.clone(constraintLayout)
+
+            constraintSet.connect(
+                messageListView.id,
+                ConstraintSet.TOP,
+                R.id.guideline_20_chat,
+                ConstraintSet.TOP
+            )
+
+            // constraintSet을 적용하여 레이아웃 업데이트
+            constraintSet.applyTo(constraintLayout)
+        }
+        else if(!graph && analysis){
+            // emotionFrameLayout를 숨김
+            emotionFrameLayout.visibility = View.GONE
+
+            // messageListView의 제약 조건을 설정하여 emotionFrameLayout의 자리를 차지하도록 함
+            val constraintLayout = findViewById<ConstraintLayout>(R.id.constraintLayout)
+            val constraintSet = ConstraintSet()
+            constraintSet.clone(constraintLayout)
+
+            constraintSet.connect(
+                messageListView.id,
+                ConstraintSet.TOP,
+                R.id.guideline_20_chat,
+                ConstraintSet.TOP
+            )
+
+            // constraintSet을 적용하여 레이아웃 업데이트
+            constraintSet.applyTo(constraintLayout)
+
+            constraintSet.connect(
+                analysisFrameLayout.id,
+                ConstraintSet.TOP,
+                R.id.guideline_10_chat,
+                ConstraintSet.TOP
+            )
+            constraintSet.applyTo(constraintLayout)
+            constraintSet.connect(
+                analysisFrameLayout.id,
+                ConstraintSet.BOTTOM,
+                R.id.guideline_20_chat,
+                ConstraintSet.TOP
+            )
             constraintSet.applyTo(constraintLayout)
         }
 

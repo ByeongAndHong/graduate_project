@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
-from model import EmotionClassifier
+from model import EmotionClassifier, AnalysisModel
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:1234@localhost:3306/chatapp'
@@ -9,6 +9,9 @@ db = SQLAlchemy(app)
 
 model_path = 'your_path'
 ec = EmotionClassifier(model_path)
+
+api_key = "your_api_key"
+al = AnalysisModel(api_key)
 
 class User(db.Model):
     Id = db.Column(db.Integer, primary_key=True)
@@ -194,6 +197,23 @@ def get_messages(chat_id):
     # 정렬 후 Time 필드 제거
     final_result = [{'UserId': message['UserId'], 'Message': message['Message']} for message in sorted_result]
     return jsonify({'Status': 'success', 'Messages': final_result})
+
+@app.route('/emotion/<int:chat_id>/<int:user_id>/<int:friend_id>', methods=['GET'])
+def get_emotion(chat_id, user_id, friend_id):
+    if chat_id == 0:
+        return jsonify({'Percent': 50, 'Analysis': ""})
+    messages = Chat.query.filter_by(ChatId=chat_id, UserId=friend_id).order_by(Chat.Time).all()
+    message_string = '. '.join([str(message.Message) for message in messages])
+    logit = ec.test_sentences([message_string])
+    predict = ec.get_test_pred(logit)
+    percent = 20*predict
+
+    messages = Chat.query.filter_by(ChatId=chat_id).order_by(Chat.Time).all()
+    message_string = al.configure_messages(messages, user_id)
+    analysis = al.analysis_messages(message_string)
+    print(percent)
+    print(analysis)
+    return jsonify({'Percent': percent, 'Analysis': analysis})
 
 with app.app_context():
     db.create_all()

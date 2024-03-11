@@ -16,12 +16,10 @@ import android.widget.Toast
 import androidx.appcompat.app.ActionBar
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
+import com.airbnb.lottie.LottieAnimationView
 import com.google.gson.Gson
 import edu.skku.cs.chatapp.dto.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody.Companion.toRequestBody
@@ -52,6 +50,10 @@ class ChatActivity : AppCompatActivity() {
             actionBar.hide()
         }
 
+        val heartAnimation = findViewById<LottieAnimationView>(R.id.heartAnimation)
+        val positivePercentTextView = findViewById<TextView>(R.id.positivePercentTextView)
+        val negativePercentTextView = findViewById<TextView>(R.id.negativePercentTextView)
+        val analysisTextView = findViewById<TextView>(R.id.analysisTextView)
         val friendNameTextView = findViewById<TextView>(R.id.friendNameTextView)
         val xButton = findViewById<ImageView>(R.id.xImageView)
         val messageText = findViewById<EditText>(R.id.messageText)
@@ -59,6 +61,36 @@ class ChatActivity : AppCompatActivity() {
         val emotionFrameLayout = findViewById<FrameLayout>(R.id.emotionFrameLayout)
         val analysisFrameLayout = findViewById<FrameLayout>(R.id.analysisFrameLayout)
         val messageListView = findViewById<ListView>(R.id.messageListView)
+
+        heartAnimation.setOnClickListener {
+                heartAnimation.playAnimation()
+                val client = OkHttpClient()
+                val host = Utils.SERVER_URL
+
+                val path = "/emotion/" + chatId + "/" + id + "/" + friendId
+                val req = Request.Builder().url(host+path).get().build()
+
+                client.newCall(req).enqueue(object : Callback {
+                    override fun onFailure(call: Call, e: IOException) {
+                        e.printStackTrace()
+                    }
+                    override fun onResponse(call: Call, response: Response) {
+                        response.use {
+                            if(!response.isSuccessful)throw IOException("Unexpected code $response")
+                            val str = response.body!!.string()
+                            val data = Gson().fromJson(str, EmotionResponse::class.java)
+
+                            Log.d("emotion", data.Percent.toString())
+                            CoroutineScope(Dispatchers.Main).launch {
+                                positivePercentTextView.text = data.Percent.toString() + " %"
+                                negativePercentTextView.text = (100-data.Percent).toString() + " %"
+                                analysisTextView.text = data.Analysis
+                                heartAnimation.pauseAnimation()
+                            }
+                        }
+                    }
+                })
+        }
 
         if(!graph && !analysis){
             // emotionFrameLayout를 숨김
@@ -173,7 +205,6 @@ class ChatActivity : AppCompatActivity() {
 
                                 if(chatId == "0"){
                                     chatId = data.ChatId.toString()
-                                    Log.d("chatId", " "+chatId)
                                 }
                             }
                         }
@@ -203,7 +234,6 @@ class ChatActivity : AppCompatActivity() {
                         response.use {
                             if(!response.isSuccessful)throw IOException("Unexpected code $response")
                             val str = response.body!!.string()
-                            Log.d("response", str)
                             val data = Gson().fromJson(str, UpdateResponse::class.java)
                             CoroutineScope(Dispatchers.Main).launch {
                                 if(data.Status == "success"){

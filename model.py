@@ -1,6 +1,7 @@
 from transformers import BertForSequenceClassification
 from transformers import BertTokenizer
 from keras.preprocessing.sequence import pad_sequences
+import google.generativeai as genai
 import torch
 import numpy as np
 
@@ -58,3 +59,22 @@ class EmotionClassifier:
             return 4
         else:
             return 5
+
+class AnalysisModel:
+    def __init__(self, API_KEY):
+        genai.configure(api_key=API_KEY)
+        self.model = genai.GenerativeModel('gemini-pro')
+
+    def configure_messages(self, messages, user_id):
+        ret = ""
+        for message in messages:
+            if message.UserId == user_id:
+                ret += "나 : " + str(message.Message) + "\n"
+            else:
+                ret += "상대방 : " + str(message.Message) + "\n"
+
+        return ret
+
+    def analysis_messages(self, content):
+        response = self.model.generate_content("나와 상대방의 대화를 요약하고 상대방의 감정이 어떤지 분석해줘. 대답은 한국어로 해.\n"+content)
+        return response.text

@@ -10,7 +10,7 @@ db = SQLAlchemy(app)
 model_path = 'your_path'
 ec = EmotionClassifier(model_path)
 
-api_key = "your_api_key"
+api_key = "your_key"
 al = AnalysisModel(api_key)
 
 class User(db.Model):
@@ -198,18 +198,13 @@ def get_messages(chat_id):
     final_result = [{'UserId': message['UserId'], 'Message': message['Message']} for message in sorted_result]
     return jsonify({'Status': 'success', 'Messages': final_result})
 
-@app.route('/emotion/<int:chat_id>/<int:user_id>/<int:friend_id>', methods=['GET'])
-def get_emotion(chat_id, user_id, friend_id):
+@app.route('/emotion/<int:chat_id>/<int:user_id>', methods=['GET'])
+def get_emotion(chat_id, user_id):
     if chat_id == 0:
         return jsonify({'Percent': 50, 'Analysis': ""})
-    messages = Chat.query.filter_by(ChatId=chat_id, UserId=friend_id).order_by(Chat.Time).all()
-    message_string = '. '.join([str(message.Message) for message in messages])
-    logit = ec.test_sentences([message_string])
-    predict = ec.get_test_pred(logit)
-    percent = 20*predict
-
     messages = Chat.query.filter_by(ChatId=chat_id).order_by(Chat.Time).all()
     message_string = al.configure_messages(messages, user_id)
+    percent = 20 * ec.test_sentences([message_string])
     analysis = al.analysis_messages(message_string)
     print(percent)
     print(analysis)

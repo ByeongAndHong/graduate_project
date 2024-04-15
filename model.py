@@ -47,15 +47,12 @@ class EmotionClassifier:
         logits = outputs[0]
         logits = logits.detach().cpu().numpy()
 
-        return logits
-
-    def get_test_pred(self, logits):
-        temp = np.argmax(logits)
-        if temp==0:
+        tmp = np.argmax(logits)
+        if tmp == 0:
             return 1
-        elif temp==1:
+        elif tmp == 1:
             return 2
-        elif temp==2:
+        elif tmp == 2:
             return 4
         else:
             return 5
@@ -74,6 +71,10 @@ class AnalysisModel:
                 ret += "상대방 : " + str(message.Message) + "\n"
 
         return ret
+
+    def summarize_messages(self, content):
+        response = self.model.generate_content("이 대화에서 상대방의 감정이 어떤지 분석해줘. 대답은 한국어로 해.\n"+content)
+        return response.test
 
     def analysis_messages(self, content):
         response = self.model.generate_content("나와 상대방의 대화를 요약하고 상대방의 감정이 어떤지 분석해줘. 대답은 한국어로 해.\n"+content)

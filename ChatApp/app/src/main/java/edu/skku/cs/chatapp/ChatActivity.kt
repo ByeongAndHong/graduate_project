@@ -67,7 +67,7 @@ class ChatActivity : AppCompatActivity() {
                 val client = OkHttpClient()
                 val host = Utils.SERVER_URL
 
-                val path = "/emotion/" + chatId + "/" + id + "/" + friendId
+                val path = "/emotion/" + chatId + "/" + id
                 val req = Request.Builder().url(host+path).get().build()
 
                 client.newCall(req).enqueue(object : Callback {

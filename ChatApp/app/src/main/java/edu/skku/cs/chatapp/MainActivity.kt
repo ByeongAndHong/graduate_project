@@ -40,7 +40,9 @@ class MainActivity : AppCompatActivity() {
             while (true) {
                 // 메시지 전송 로직
                 sendChatlistGetRequest()
-                sendFriendGetRequest()
+                if(sharedViewModel.getIfSearching().value == 0){
+                    sendFriendGetRequest()
+                }
                 // 일정 시간 대기 후 다음 전송 시도
                 delay(3000) // 예시: 5초마다 전송
             }

@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.media.Image
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,14 +15,23 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat.startActivity
+import com.google.gson.Gson
 import edu.skku.cs.chatapp.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import okhttp3.*
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.RequestBody.Companion.toRequestBody
+import java.io.IOException
 import java.security.AccessController.getContext
 
-data class Friend(var ChatId: Int, var Id: Int, var UserName: String, var Email: String, var Image: ByteArray?)
+data class Friend(var ChatId: Int, var Id: Int, var UserName: String, var Email: String, var Image: ByteArray?, var Friend: Int = 1)
 data class FriendListResponse(var Status: String, var Friends: List<Friend>)
+
+data class UserFindListResponse(var Status: String, var Users: List<Friend>)
+
+data class AddFriendResponse(var Status: String)
 
 class FriendListAdapter(val context:Context, val bundle: Bundle?, val items: List<Friend>, val id: String): BaseAdapter() {
     override fun getCount(): Int {
@@ -43,7 +53,9 @@ class FriendListAdapter(val context:Context, val bundle: Bundle?, val items: Lis
         val profileImageView = view.findViewById<ImageView>(R.id.profileImageView)
         val nameTextView = view.findViewById<TextView>(R.id.nameTextView)
         val plusImageView = view.findViewById<ImageView>(R.id.plusImageView)
-        plusImageView.visibility = View.GONE
+        if(items.get(p0).Friend == 1){
+            plusImageView.visibility = View.GONE
+        }
 
         nameTextView.text = items.get(p0).UserName
 
@@ -57,6 +69,37 @@ class FriendListAdapter(val context:Context, val bundle: Bundle?, val items: Lis
                 }
                 startActivity(context, intent, bundle)
             }
+        }
+
+        plusImageView.setOnClickListener {
+            val client = OkHttpClient()
+            val host = Utils.SERVER_URL
+
+            val path = "/add/" + id + "/" + items.get(p0).Id.toString()
+            val req = Request.Builder().url(host+path).get().build()
+
+            client.newCall(req).enqueue(object : Callback {
+                override fun onFailure(call: Call, e: IOException) {
+                    e.printStackTrace()
+                }
+
+                override fun onResponse(call: Call, response: Response) {
+                    response.use {
+                        if(!response.isSuccessful)throw IOException("Unexpected code $response")
+                        val str = response.body!!.string()
+                        Log.d("response", str)
+                        val data = Gson().fromJson(str, AddFriendResponse::class.java)
+                        CoroutineScope(Dispatchers.Main).launch {
+                            if(data.Status == "success"){
+                                plusImageView.visibility = View.GONE
+                            }
+                            else{
+                                Toast.makeText(context, "친구 추가에 실패했습니다.", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                    }
+                }
+            })
         }
 
         return view

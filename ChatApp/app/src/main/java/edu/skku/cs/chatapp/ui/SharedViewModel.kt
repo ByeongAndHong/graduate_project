@@ -10,6 +10,7 @@ class SharedViewModel : ViewModel() {
     private val userIdLiveData = MutableLiveData<String>()
     private val friendListLiveData = MutableLiveData<List<Friend>>()
     private val chatListLiveData = MutableLiveData<List<ChatListItem>>()
+    private val ifSearchingLiveData = MutableLiveData<Int>()
 
     fun setUserId(userId: String) {
         userIdLiveData.value = userId
@@ -23,6 +24,10 @@ class SharedViewModel : ViewModel() {
         chatListLiveData.value = chatList
     }
 
+    fun setIfSearching(ifSearching: Int){
+        ifSearchingLiveData.value = ifSearching
+    }
+
     fun getUserId(): LiveData<String> {
         return userIdLiveData
     }
@@ -33,5 +38,9 @@ class SharedViewModel : ViewModel() {
 
     fun getChatList(): LiveData<List<ChatListItem>>{
         return chatListLiveData
+    }
+
+    fun getIfSearching(): LiveData<Int>{
+        return ifSearchingLiveData
     }
 }

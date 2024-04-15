@@ -4,7 +4,7 @@ from datetime import datetime
 from model import EmotionClassifier, AnalysisModel
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:1234@localhost:3306/chatapp'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'your_url'
 db = SQLAlchemy(app)
 
 model_path = 'your_path'
@@ -209,6 +209,37 @@ def get_emotion(chat_id, user_id):
     print(percent)
     print(analysis)
     return jsonify({'Percent': percent, 'Analysis': analysis})
+
+@app.route('/userfind/<int:user_id>/<string:name>', methods=['GET'])
+def find_user(user_id, name):
+    users = User.query.filter(User.UserName.ilike(f'%{name}%')).all()
+    if not users:
+        return jsonify({'Status': 'error', 'Message': 'User not found'})
+
+    user_info = []
+    for user in users:
+        if user.Id == user_id:
+            continue
+        is_friend = Friend.query.filter_by(UserId=user_id, FriendId=user.Id).first()
+        if is_friend:
+            friend_status = 1
+        else:
+            friend_status = 0
+        user_info.append({'Id': user.Id, 'UserName': user.UserName, 'Email': user.Email, 'Image': user.Image, 'Friend': friend_status})
+    print(user_info)
+    return jsonify({'Status': 'success', 'Users': user_info})
+
+@app.route('/add/<int:user_id>/<int:friend_id>', methods=['GET'])
+def add_friend(user_id, friend_id):
+    new_friendship = Friend(UserId=user_id, FriendId=friend_id)
+
+    try:
+        with app.app_context():
+            db.session.add(new_friendship)
+            db.session.commit()
+        return jsonify({'Status': 'success'})
+    except Exception as e:
+        return jsonify({'Status': 'error'})
 
 with app.app_context():
     db.create_all()

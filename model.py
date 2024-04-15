@@ -59,8 +59,26 @@ class EmotionClassifier:
 
 class AnalysisModel:
     def __init__(self, API_KEY):
+        safety_settings = [
+            {
+                "category": "HARM_CATEGORY_SEXUALLY_EXPLICIT",
+                "threshold": "BLOCK_NONE"
+            },
+            {
+                "category": "HARM_CATEGORY_HATE_SPEECH",
+                "threshold": "BLOCK_NONE"
+            },
+            {
+                "category": "HARM_CATEGORY_HARASSMENT",
+                "threshold": "BLOCK_NONE"
+            },
+            {
+                "category": "HARM_CATEGORY_DANGEROUS_CONTENT",
+                "threshold": "BLOCK_NONE"
+            },
+        ]
         genai.configure(api_key=API_KEY)
-        self.model = genai.GenerativeModel('gemini-pro')
+        self.model = genai.GenerativeModel(model_name='gemini-pro', safety_settings=safety_settings)
 
     def configure_messages(self, messages, user_id):
         ret = ""
@@ -69,7 +87,7 @@ class AnalysisModel:
                 ret += "나 : " + str(message.Message) + "\n"
             else:
                 ret += "상대방 : " + str(message.Message) + "\n"
-
+        print(ret)
         return ret
 
     def summarize_messages(self, content):
@@ -77,5 +95,6 @@ class AnalysisModel:
         return response.test
 
     def analysis_messages(self, content):
+        print("content : " + content)
         response = self.model.generate_content("나와 상대방의 대화를 요약하고 상대방의 감정이 어떤지 분석해줘. 대답은 한국어로 해.\n"+content)
         return response.text

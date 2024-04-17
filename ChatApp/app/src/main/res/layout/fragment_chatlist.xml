@@ -13,13 +13,6 @@
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.1" />
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline_20_chatlist"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.2" />
-
     <FrameLayout
         android:id="@+id/chatListTitleFrameLayout"
         android:layout_width="0dp"
@@ -61,57 +54,6 @@
                 app:layout_constraintStart_toEndOf="@+id/chatListImageView"
                 app:layout_constraintTop_toTopOf="@+id/chatListImageView" />
 
-            <ImageView
-                android:id="@+id/chatListSearchImageView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="20dp"
-                android:src="@drawable/search"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </FrameLayout>
-
-    <FrameLayout
-        android:id="@+id/chatListSearchFrameLayout"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:background="#000000"
-        app:layout_constraintBottom_toTopOf="@+id/guideline_20_chatlist"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/guideline_10_chatlist">
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/chatListSearchConstraintLayout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="1dp"
-            android:layout_marginRight="1dp"
-            android:layout_marginBottom="1dp"
-            android:background="#FFFFFF">
-
-            <Button
-                android:id="@+id/chatListSearchButton"
-                android:layout_width="80dp"
-                android:layout_height="51dp"
-                android:text="검색"
-                app:layout_constraintBottom_toBottomOf="@+id/chatListSearchEditText"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/chatListSearchEditText"
-                app:layout_constraintTop_toTopOf="@+id/chatListSearchEditText" />
-
-            <EditText
-                android:id="@+id/chatListSearchEditText"
-                android:layout_width="298dp"
-                android:layout_height="57dp"
-                android:layout_marginStart="20dp"
-                android:hint="이름"
-                android:inputType="textPersonName"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </FrameLayout>
 

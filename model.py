@@ -91,7 +91,7 @@ class AnalysisModel:
         return ret
 
     def summarize_messages(self, content):
-        response = self.model.generate_content("이 대화에서 상대방의 감정이 어떤지 분석해줘. 대답은 한국어로 해.\n"+content)
+        response = self.model.generate_content("상대방의 말만 요약해줘. 대답은 한국어로 해.\n"+content)
         return response.test
 
     def analysis_messages(self, content):

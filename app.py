@@ -4,7 +4,7 @@ from datetime import datetime
 from model import EmotionClassifier, AnalysisModel
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'your_url'
+app.config['SQLALCHEMY_DATABASE_URL'] = 'your_url'
 db = SQLAlchemy(app)
 
 model_path = 'your_path'

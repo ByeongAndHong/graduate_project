@@ -51,7 +51,7 @@ class EmotionClassifier:
         if tmp == 0:
             return 1
         elif tmp == 1:
-            return 2
+            return 3
         elif tmp == 2:
             return 4
         else:
@@ -87,14 +87,12 @@ class AnalysisModel:
                 ret += "나 : " + str(message.Message) + "\n"
             else:
                 ret += "상대방 : " + str(message.Message) + "\n"
-        print(ret)
         return ret
 
     def summarize_messages(self, content):
         response = self.model.generate_content("상대방의 말만 요약해줘. 대답은 한국어로 해.\n"+content)
-        return response.test
+        return response.text
 
     def analysis_messages(self, content):
-        print("content : " + content)
         response = self.model.generate_content("나와 상대방의 대화를 요약하고 상대방의 감정이 어떤지 분석해줘. 대답은 한국어로 해.\n"+content)
         return response.text

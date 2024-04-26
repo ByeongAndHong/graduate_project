@@ -45,17 +45,13 @@ class EmotionClassifier:
                                  attention_mask=b_input_mask)
 
         logits = outputs[0]
+        prob = torch.nn.functional.softmax(logits, dim=1).detach().cpu().numpy()
         logits = logits.detach().cpu().numpy()
 
         tmp = np.argmax(logits)
-        if tmp == 0:
-            return 1
-        elif tmp == 1:
-            return 3
-        elif tmp == 2:
-            return 4
-        else:
-            return 5
+        tmp2 = list(prob[0])
+
+        return tmp, tmp2
 
 class AnalysisModel:
     def __init__(self, API_KEY):

@@ -205,11 +205,11 @@ def get_emotion(chat_id, user_id):
     messages = Chat.query.filter_by(ChatId=chat_id).order_by(Chat.Time).all()
     message_string = al.configure_messages(messages, user_id)
     summarize_message = al.summarize_messages(message_string)
-    percent = 20 * ec.test_sentences([summarize_message])
+    argmax, percent = ec.test_sentences([summarize_message])
     analysis = al.analysis_messages(message_string)
     print(percent)
     print(analysis)
-    return jsonify({'Percent': percent, 'Analysis': analysis})
+    return jsonify({'Argmax': str(argmax), 'Percent0': str(int(percent[0]*100)), 'Percent1': str(int(percent[1]*100)), 'Percent2': str(int(percent[2]*100)), 'Percent3': str(int(percent[3]*100)), 'Analysis': analysis})
 
 @app.route('/userfind/<int:user_id>/<string:name>', methods=['GET'])
 def find_user(user_id, name):

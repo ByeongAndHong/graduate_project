@@ -2,6 +2,7 @@ package edu.skku.cs.chatapp
 
 import android.content.Intent
 import android.content.SharedPreferences
+import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -53,6 +54,12 @@ class ChatActivity : AppCompatActivity() {
         val heartAnimation = findViewById<LottieAnimationView>(R.id.heartAnimation)
         val positivePercentTextView = findViewById<TextView>(R.id.positivePercentTextView)
         val negativePercentTextView = findViewById<TextView>(R.id.negativePercentTextView)
+        val mostPositivePercentTextView = findViewById<TextView>(R.id.mostPositivePercentTextView)
+        val mostNegativePercentTextView = findViewById<TextView>(R.id.mostNegativePercentTextView)
+        val mostPositiveTextView = findViewById<TextView>(R.id.mostPositiveTextView)
+        val positiveTextView = findViewById<TextView>(R.id.positiveTextView)
+        val negativeTextView = findViewById<TextView>(R.id.negativeTextView)
+        val mostNegativeTextView = findViewById<TextView>(R.id.mostNegativeTextView)
         val analysisTextView = findViewById<TextView>(R.id.analysisTextView)
         val friendNameTextView = findViewById<TextView>(R.id.friendNameTextView)
         val xButton = findViewById<ImageView>(R.id.xImageView)
@@ -80,10 +87,52 @@ class ChatActivity : AppCompatActivity() {
                             val str = response.body!!.string()
                             val data = Gson().fromJson(str, EmotionResponse::class.java)
 
-                            Log.d("emotion", data.Percent.toString())
                             CoroutineScope(Dispatchers.Main).launch {
-                                positivePercentTextView.text = data.Percent.toString() + " %"
-                                negativePercentTextView.text = (100-data.Percent).toString() + " %"
+                                mostPositivePercentTextView.text = data.Percent3.toString() + " %"
+                                positivePercentTextView.text = data.Percent2.toString() + " %"
+                                negativePercentTextView.text = data.Percent1.toString() + " %"
+                                mostNegativePercentTextView.text = data.Percent0.toString() + " %"
+                                if(data.Argmax == 0){
+                                    mostNegativePercentTextView.setTextColor(Color.RED)
+                                    mostNegativeTextView.setTextColor(Color.RED)
+                                    negativePercentTextView.setTextColor(Color.BLACK)
+                                    negativeTextView.setTextColor(Color.BLACK)
+                                    positivePercentTextView.setTextColor(Color.BLACK)
+                                    positiveTextView.setTextColor(Color.BLACK)
+                                    mostPositivePercentTextView.setTextColor(Color.BLACK)
+                                    mostPositiveTextView.setTextColor(Color.BLACK)
+                                }
+                                else if(data.Argmax == 1){
+                                    mostNegativePercentTextView.setTextColor(Color.BLACK)
+                                    mostNegativeTextView.setTextColor(Color.BLACK)
+                                    negativePercentTextView.setTextColor(Color.RED)
+                                    negativeTextView.setTextColor(Color.RED)
+                                    positivePercentTextView.setTextColor(Color.BLACK)
+                                    positiveTextView.setTextColor(Color.BLACK)
+                                    mostPositivePercentTextView.setTextColor(Color.BLACK)
+                                    mostPositiveTextView.setTextColor(Color.BLACK)
+                                }
+                                else if(data.Argmax == 2){
+                                    mostNegativePercentTextView.setTextColor(Color.BLACK)
+                                    mostNegativeTextView.setTextColor(Color.BLACK)
+                                    negativePercentTextView.setTextColor(Color.BLACK)
+                                    negativeTextView.setTextColor(Color.BLACK)
+                                    positivePercentTextView.setTextColor(Color.RED)
+                                    positiveTextView.setTextColor(Color.RED)
+                                    mostPositivePercentTextView.setTextColor(Color.BLACK)
+                                    mostPositiveTextView.setTextColor(Color.BLACK)
+                                }
+                                else if(data.Argmax == 3){
+                                    mostNegativePercentTextView.setTextColor(Color.BLACK)
+                                    mostNegativeTextView.setTextColor(Color.BLACK)
+                                    negativePercentTextView.setTextColor(Color.BLACK)
+                                    negativeTextView.setTextColor(Color.BLACK)
+                                    positivePercentTextView.setTextColor(Color.BLACK)
+                                    positiveTextView.setTextColor(Color.BLACK)
+                                    mostPositivePercentTextView.setTextColor(Color.RED)
+                                    mostPositiveTextView.setTextColor(Color.RED)
+                                }
+
                                 analysisTextView.text = data.Analysis
                                 heartAnimation.pauseAnimation()
                             }

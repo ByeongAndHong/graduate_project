@@ -18,7 +18,7 @@ data class Message(var UserId: Int, var Message: String)
 
 data class UpdateResponse(var Status: String, var Messages: List<Message>)
 
-data class EmotionResponse(var Percent: Int, var Analysis: String)
+data class EmotionResponse(var Argmax: Int, var Percent0: Int, var Percent1: Int, var Percent2: Int, var Percent3: Int, var Analysis: String)
 
 class ChatAdapter(val context: Context, val items: List<Message>, val id: String): BaseAdapter() {
     override fun getCount(): Int {
